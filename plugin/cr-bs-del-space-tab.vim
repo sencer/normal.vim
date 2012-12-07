@@ -24,7 +24,6 @@
 " * Drop cr-bs-del-space-tab.vim into your plugin directory           
 "
 
-
 function! Delete_key(...)
 
   let line=getline (".")
@@ -33,23 +32,7 @@ function! Delete_key(...)
     return
   endif
 
-  let column = col(".")
-  let line_len = strlen (line)
-  let first_or_end=0
-
-  if column == 1
-    let first_or_end=1
-  else
-    if column == line_len
-      let first_or_end=1
-  endif
-  endif
-
-  execute "normal i\<DEL>\<ESC>"
-
-  if first_or_end == 0
-     execute "normal l" 
-  endif
+  execute "normal dl"
 
 endfunction
 
@@ -59,18 +42,11 @@ function! BS_key(...)
   let column = col(".")
   "call Decho ("colum: " . column)
 
-  execute "normal i\<BS>\<ESC>"
-
-    if column == 1
-      let column2 = col (".")
-      if column2 > 1
-          execute "normal l"
-      endif
-    else
-      if column > 2
-        execute "normal l" 
-      endif
-    endif
+  if col(".") == 1
+    execute "normal i\<BS>\<Esc>"
+  else
+    execute "normal dh" 
+  endif
 
 endfunction       
 
@@ -86,7 +62,7 @@ function! TAB_key (...)
   let end_pos = col(".")
   let diff = end_pos - start_pos
   let counter = 0
-  
+
 
   "ugly :)
   while 1==1
@@ -98,14 +74,13 @@ function! TAB_key (...)
   endwhile
 
   execute "normal \<ESC>"
-       
+
 endfunction
-
-
+     
 function! Return_key ()
 
   let buftype = getbufvar(bufnr(''), '&buftype') 
-  
+
   if buftype != ""
     unmap <CR>
     execute "normal \<CR>"
@@ -117,9 +92,8 @@ function! Return_key ()
 endfunction           
 
 
-
 nnoremap <silent> <DEL> :call Delete_key()<CR>
 nnoremap <silent> <CR> :call Return_key()<CR>
 nnoremap <silent> <SPACE> i<SPACE><ESC>l
-nnoremap <silent> <TAB> :call TAB_key()<CR>
+nnoremap <silent> <TAB> i<SPACE><SPACE><ESC>l
 nnoremap <silent> <BS> :call BS_key()<CR>
